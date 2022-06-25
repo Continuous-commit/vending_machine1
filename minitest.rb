@@ -1,20 +1,13 @@
 require 'minitest/autorun'
-require "./stock"
+require "./drink_stock"
 
 class StockTest < Minitest::Test
-
-  def test_vendingmachine
+  def test_drinkstock
     stock = Stock.new
-    stock.additional_drink_info("レッドブル", 200, 5)
-    stock.additional_drink_info("水", 100, 5)
-    stock.stock_info
+    assert_equal 5, stock.add_drinks("コーラ", 120, 5)
+    assert_equal ["コーラ"], stock.stock_info.uniq
     female_suica = Suica.new(500, 32, "女性")
-    male_suica = Suica.new(600, 21, "男性")
-    stock.purchase("レッドブル", female_suica)
-    stock.purchase("コーラ", female_suica)
-    stock.purchase("コーラ", female_suica)
-    stock.purchase("コーラ", female_suica)
-    stock.charge_money(200, female_suica)
-    stock.history
+    assert_equal [{drink: "コーラ", age: 32, sex: "女性"}], stock.purchase("コーラ", female_suica)
+    assert_equal [{drink: "コーラ", age: 32, sex: "女性"}], stock.history
   end
 end

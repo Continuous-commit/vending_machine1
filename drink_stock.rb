@@ -7,14 +7,14 @@ class Stock
 
   def initialize
     @stocks = []
-    additional_drink_info("コーラ", 120, 5)
+    add_drinks("コーラ", 120, 5)
     @sales_total = 0
     @history_info = []
   end
 
   # 在庫確認
-  def additional_drink_info(name, price, num)    # 仮引数をインスタンス変数にすることはできない
-    @stocks << Drink.new(name, price, num)
+  def add_drinks(name, price, drink_num)    # 仮引数をインスタンス変数にすることはできない
+    drink_num.times.each { @stocks << Drink.new(name, price) }
   end
 
   def stock_info
@@ -26,21 +26,21 @@ class Stock
   end
 
   def purchase(name, suica)    # 各々のスイカに対応しなければならない
-    nowis = DateTime.now.to_time
+    purchased_at = DateTime.now.to_time
     drink = @stocks.detect { |stock| stock.name == name }
-    if drink.num <= 0
+    
+    if not drink.name
       puts "在庫が足りません" 
     elsif suica.total < drink.price
       puts "チャージ金額が足りません" 
     else
-      drink.num -= 1
+      @stocks.delete(drink)
       suica.total -= drink.price    # なかなか難しかった
       @sales_total += drink.price
-      puts "#{drink.name}を購入しました。#{nowis}"
-      puts "#{drink.name}の在庫は#{drink.num}個です。"
+      puts "#{drink.name}を購入しました。#{purchased_at}"
       puts "チャージ残高は#{suica.total}円です。"
       puts "売り上げ金額は#{sales_total}です。"
-      @history_info << {drink: drink.name, age: suica.age, sex: suica.sex, time: nowis}
+      @history_info << {drink: drink.name, age: suica.age, sex: suica.sex}
     end
   end
 
@@ -57,7 +57,7 @@ class Stock
   end
 
   def history
-    puts "販売履歴です。"
+    puts "販売履歴"
     @history_info.each do |info|
       puts "飲み物：#{info[:drink]}、年齢：#{info[:age]}、性別：#{info[:sex]}"
     end
