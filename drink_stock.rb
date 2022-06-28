@@ -19,8 +19,7 @@ class Stock
 
   def stock_info
     puts "在庫"
-    @stocks.map { |d| d.name }.each do |name|
-      drink = @stocks.detect { |stock| stock.name == name }
+    @stocks.each do |drink|
       puts drink.drink_details
     end
   end
@@ -29,7 +28,7 @@ class Stock
     purchased_at = DateTime.now.to_time
     drink = @stocks.detect { |stock| stock.name == name }
     
-    if not drink.name
+    if not drink
       puts "在庫が足りません" 
     elsif suica.total < drink.price
       puts "チャージ金額が足りません" 
